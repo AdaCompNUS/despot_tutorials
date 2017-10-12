@@ -1,0 +1,9 @@
+# 0 - NORTH     
+# 1 - EAST     
+# 2 - SOUTH    
+# 3 - WEST     
+# 4 - TAG
+
+int32 action
+---
+int32[] observations 

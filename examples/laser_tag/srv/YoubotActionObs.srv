@@ -1,0 +1,13 @@
+# directions 
+# North - NORTH     
+# East  - EAST     
+# South - SOUTH    
+# West  - WEST     
+# NE    - NORTHEAST
+# SE    - SOUTHEAST
+# SW    - SOUTHWEST
+# NW    - NORTHWEST
+
+string direction
+---
+int32[] laser_readings

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>youbot_gazebo_worlds</name>
+  <version>0.8.0</version>
+  <description>Gazebo worlds configurations</description>
+
+  <maintainer email="nowak@locomotec.com">Walter Nowak</maintainer>
+  <maintainer email="blumenthal@locomotec.com">Sebastian Blumenthal</maintainer>
+
+  <license>GPLv3</license>
+
+  <url type="website">http://github.com/mas-group/youbot_simulation</url> -->
+
+  <author email="frederik.hegger@h-brs.de">Frederik Hegger</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>xacro</run_depend>
+
+
+</package>

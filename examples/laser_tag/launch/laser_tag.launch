@@ -1,0 +1,95 @@
+<launch>
+
+	<!-- these are the arguments you can pass this launch file, for example 
+		paused:=true -->
+	<arg name="paused" default="false" />
+	<arg name="use_sim_time" default="true" />
+	<arg name="gui" default="true" />
+	<arg name="headless" default="false" />
+	<arg name="debug" default="false" />
+
+	<!-- Robot1 (chaser) pose -->
+	<arg name="R1_x" default="3.5"/>
+	<arg name="R1_y" default="2.5"/>
+	<arg name="R1_z" default="0.085"/>
+	<arg name="R1_roll" default="0"/>
+	<arg name="R1_pitch" default="0"/>
+	<arg name="R1_yaw" default="1.57"/>
+
+	<!-- Robot2 (thief) pose -->
+	<arg name="R2_x" default="6.5"/>
+	<arg name="R2_y" default="5.5"/>
+	<arg name="R2_z" default="0.085"/>
+	<arg name="R2_roll" default="0"/>
+	<arg name="R2_pitch" default="0"/>
+	<arg name="R2_yaw" default="1.57"/>
+
+	<!-- Laser Tag world -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name" value="$(find laser_tag)/worlds/7x11_grid.world" />
+		<arg name="debug" value="$(arg debug)" />
+		<arg name="gui" value="$(arg gui)" />
+		<arg name="paused" value="$(arg paused)" />
+		<arg name="use_sim_time" value="$(arg use_sim_time)" />
+		<arg name="headless" value="$(arg headless)" />
+	</include>
+
+
+	<!-- Chaser -->
+	<group ns="/robot">
+		<param name="robot_description" command="$(find xacro)/xacro.py $(find youbot_description)/robots/youbot_base_laser.urdf.xacro" />
+
+		<node pkg="gazebo_ros" type="spawn_model" name="spawn_robot" respawn="false" output="screen"
+		    args="-param robot_description
+		          -urdf
+		          -x $(arg R1_x)
+		          -y $(arg R1_y)
+		          -z $(arg R1_z)
+		          -R $(arg R1_roll) 
+		          -P $(arg R1_pitch) 
+		          -Y $(arg R1_yaw)
+		          -model chaser">
+		</node>
+
+		<!-- launch joint state controller -->
+		<include file="$(find youbot_gazebo_control)/launch/joint_state_controller.launch"/>
+
+		<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+		  <param name="publish_frequency" type="double" value="100.0" />
+		</node>
+
+		<!-- Youbot high-level interface -->
+		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface"/>
+	</group>
+
+	<!-- Thief -->
+	<group ns="/target">
+		<param name="robot_description" command="$(find xacro)/xacro.py $(find youbot_description)/robots/youbot_target.urdf.xacro" />
+
+		<node pkg="gazebo_ros" type="spawn_model" name="spawn_robot" respawn="false" output="screen"
+		    args="-param robot_description
+		          -urdf
+		          -x $(arg R2_x)
+		          -y $(arg R2_y)
+		          -z $(arg R2_z)
+		          -R $(arg R2_roll) 
+		          -P $(arg R2_pitch) 
+		          -Y $(arg R2_yaw)
+		          -model thief">
+		</node>
+
+		<!-- launch joint state controller -->
+		<include file="$(find youbot_gazebo_control)/launch/joint_state_controller.launch"/>
+
+		<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+		  <param name="publish_frequency" type="double" value="100.0" />
+		</node>
+
+		<!-- Youbot high-level interface -->
+		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface"/>
+	</group>
+
+	<!-- High level laser tag controller -->
+	<node pkg="laser_tag" type="laser_tag_controller" name="laser_tag_controller" output="screen"/>
+
+</launch>
