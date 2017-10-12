@@ -12,7 +12,7 @@ class LaserTagWorld: public World {
 public:
 
 
-    ros::NodeHandle nh;
+    ros::NodeHandlePtr nh;
     ros::ServiceClient client;
     //Establish connection with simulator or system
     bool Connect(){
@@ -20,12 +20,12 @@ public:
         int argc;
         char ** argv;
         ros::init(argc, argv, "test_laser_tag");
-
+        nh = ros::NodeHandlePtr(new ros::NodeHandle);
         // wait for controller service to show up (waits forever)
         ros::service::waitForService("laser_tag_action_obs", -1);
         
         // setup service client
-        client = nh.serviceClient<laser_tag::TagActionObs>("laser_tag_action_obs");
+        client = nh->serviceClient<laser_tag::TagActionObs>("laser_tag_action_obs");
     }
     //Initialize or reset the environment (for simulators or POMDP world only), return the start state of the system if applicable
     State* Initialize(){
