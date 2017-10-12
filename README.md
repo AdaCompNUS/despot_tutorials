@@ -19,7 +19,7 @@ Dependencies: DESPOT, ROS Indigo, Boost 1.55, Gazebo
 
 ## Prerequisites
 
-Install ROS Indigo.
+Install [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu).
 We recommend `ros-indigo-desktop-full` version which includes Gazebo.  
 
 Install DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed with `sudo make install` 
