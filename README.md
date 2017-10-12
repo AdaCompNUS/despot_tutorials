@@ -61,7 +61,6 @@ Launch the Gazebo environment and robot controllers:
 $ roslaunch laser_tag laser_tag.launch
 ```
 You should see a 3D 7x11 grid world with two Youbots.  
-<br></br>
 
 #### (Optional)
 #### Test Controllers
