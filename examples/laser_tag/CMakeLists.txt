@@ -15,6 +15,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+find_package(Despot CONFIG REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS thread)
 
@@ -47,6 +49,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   include/laser_tag/robot_controller
+  include/laser_tag/pomdp_planner
 )
 
 ## Declare a C++ executable
@@ -59,6 +62,10 @@ add_executable(laser_tag_controller src/robot_controller/laser_tag_controller.cp
 add_dependencies(laser_tag_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(laser_tag_controller ${catkin_LIBRARIES})
 
+## Declare a C++ executable
+add_executable(pomdp_planner src/pomdp_planner/base/base_tag.cpp src/pomdp_planner/laser_tag.cpp src/pomdp_planner/main.cpp)
+add_dependencies(pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(pomdp_planner despot ${catkin_LIBRARIES})
 
 #############
 ## Testing ##
