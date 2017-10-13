@@ -813,6 +813,27 @@ void BaseTag::PrintState(const State& s, ostream& out) const {
 }
 
 void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
+
+	const vector<State*>& particles =
+		static_cast<const ParticleBelief&>(belief).particles();
+
+	int max_prob_id=-1;
+	double max_prob=0;
+	for (int i = 0; i < particles.size(); i++) {
+		State* particle = particles[i];
+		if(particle->weight > max_prob){
+			max_prob = particle->weight;
+			max_prob_id = i;
+		}
+	}
+
+	out << "Maximum likelihood robot position:";
+	int rob= rob_[static_cast<TagState*>(particles[max_prob_id])->state_id];
+	int opp= opp_[static_cast<TagState*>(particles[max_prob_id])->state_id];
+	out << floor_.GetCell(rob) << endl;
+
+	out << "Maximum likelihood target position:";
+	out << floor_.GetCell(opp) << endl;
 }
 
 void BaseTag::PrintAction(ACT_TYPE action, ostream& out) const {
