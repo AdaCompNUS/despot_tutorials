@@ -59,8 +59,13 @@ public:
           for (int dir = 0; dir < 8; dir++) {
              LaserTag::SetReading(obs, laser_obs[dir], dir);
           }
-          if(action==4)
+          if(action==4){
+	     obs=(OBS_TYPE)0;
+	     for (int dir = 0; dir < 8; dir++) {
+	         LaserTag::SetReading(obs, 101, dir);
+	     }
             return 1;
+	  }
           else
             return 0;
         }
