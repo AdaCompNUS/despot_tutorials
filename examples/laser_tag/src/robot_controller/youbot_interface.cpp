@@ -7,6 +7,37 @@
 #define NUM_LASER_DIRECTIONS 8
 #define CONTROL_TIMEOUT 6 // seconds
 
+#define RANDOM_SEED 45
+#define NOISE_SIGMA 0.5
+
+// From despot/src/util/util.cpp
+double erf(double x) {
+  // constants
+  double a1 = 0.254829592;
+  double a2 = -0.284496736;
+  double a3 = 1.421413741;
+  double a4 = -1.453152027;
+  double a5 = 1.061405429;
+  double p = 0.3275911;
+  // Save the sign of x
+  int sign = 1;
+  if (x < 0)
+    sign = -1;
+  x = fabs(x);
+  // A&S formula 7.1.26
+  double t = 1.0 / (1.0 + p * x);
+  double y = 1.0
+    - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-x * x);
+
+  return sign * y;
+}
+
+// CDF of the normal distribution
+double gausscdf(double x, double mean, double sigma) {
+  return 0.5 * (1 + erf((x - mean) / (sqrt(2) * sigma)));
+}
+
+
 YoubotInterface::YoubotInterface()
 {
   /*
@@ -20,6 +51,8 @@ YoubotInterface::YoubotInterface()
 
   base_pose_sub_ = nh_.subscribe<nav_msgs::Odometry>("odom", 30, &YoubotInterface::base_pose_cb, this);
   laser_sub_ = nh_.subscribe<sensor_msgs::LaserScan>("laser_scan", 30, &YoubotInterface::laser_cb, this);
+
+  srand(RANDOM_SEED);
 }
 
 void YoubotInterface::base_pose_cb(const nav_msgs::Odometry::ConstPtr& odom)
@@ -27,19 +60,60 @@ void YoubotInterface::base_pose_cb(const nav_msgs::Odometry::ConstPtr& odom)
   base_pose_ = odom->pose.pose;
 }
 
+
 void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
   // Despot expects laser readings of empty cells (excluding the robot's cell) rounded to the nearest meter.
   // Raw laser readings go from -180deg to 180deg with 0deg = North
   
-  laser_readings_[SOUTH]     = (int) round(scan->ranges[0] - 0.5f);
-  laser_readings_[SOUTHEAST] = (int) round(scan->ranges[1]);
-  laser_readings_[EAST]      = (int) round(scan->ranges[2] - 0.5f);
-  laser_readings_[NORTHEAST] = (int) round(scan->ranges[3]);
-  laser_readings_[NORTH]     = (int) round(scan->ranges[4] - 0.5f);
-  laser_readings_[NORTHWEST] = (int) round(scan->ranges[5]);
-  laser_readings_[WEST]      = (int) round(scan->ranges[6] - 0.5f);
-  laser_readings_[SOUTHWEST] = (int) round(scan->ranges[7]);
+  // laser_readings_[SOUTH]     = (int) round(scan->ranges[0] - 0.5f);
+  // laser_readings_[SOUTHEAST] = (int) round(scan->ranges[1]);
+  // laser_readings_[EAST]      = (int) round(scan->ranges[2] - 0.5f);
+  // laser_readings_[NORTHEAST] = (int) round(scan->ranges[3]);
+  // laser_readings_[NORTH]     = (int) round(scan->ranges[4] - 0.5f);
+  // laser_readings_[NORTHWEST] = (int) round(scan->ranges[5]);
+  // laser_readings_[WEST]      = (int) round(scan->ranges[6] - 0.5f);
+  // laser_readings_[SOUTHWEST] = (int) round(scan->ranges[7]);
+  std::vector<double> raw_readings;
+  raw_readings.resize(8);
+  raw_readings[SOUTH]     = scan->ranges[0];
+  raw_readings[SOUTHEAST] = scan->ranges[1];
+  raw_readings[EAST]      = scan->ranges[2];
+  raw_readings[NORTHEAST] = scan->ranges[3];
+  raw_readings[NORTH]     = scan->ranges[4];
+  raw_readings[NORTHWEST] = scan->ranges[5];
+  raw_readings[WEST]      = scan->ranges[6];
+  raw_readings[SOUTHWEST] = scan->ranges[7];
+
+  double unit_size_ = 1;
+  for (int d = 0; d < 8; d++) {
+    double r = ((double) rand() / (RAND_MAX));
+    double accum_p = 0.0f;
+    double dist = raw_readings[d]; //LaserRange(*states_[s], d);
+    int selected=-1;
+    int reading = 0;
+    for (reading = 0; reading < dist / unit_size_; reading++) {
+      double min_noise = reading * unit_size_ - dist;
+      double max_noise = std::min(dist, (reading + 1) * unit_size_) - dist;
+      double prob =
+        2
+          * (gausscdf(max_noise, 0, NOISE_SIGMA)
+            - (reading > 0 ?
+              gausscdf(min_noise, 0, NOISE_SIGMA) : 0 /*min_noise = -infty*/));
+
+      //laser_readings_[d].push_back(prob);
+      accum_p += prob;
+      //std::cout << "accum_p=" << accum_p << std::endl;
+      //ROS_INFO("dir %d reading %d AccumP: %f rand %f", d, reading, accum_p, r);
+
+      if (accum_p > r && selected==-1)
+        selected=reading;
+    }
+
+    laser_readings_[d] = selected;
+    //ROS_INFO("laser_reading %d at dir %d", selected, d);
+
+  }
 }
 
 void YoubotInterface::Goto(float x, float y)

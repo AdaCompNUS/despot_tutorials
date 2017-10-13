@@ -43,7 +43,7 @@ class YoubotInterface
           ros::Subscriber laser_sub_;
 
 	  geometry_msgs::Pose base_pose_;
-          std::vector<int> laser_readings_;
+      std::vector<int> laser_readings_;
 	  
 	  ros::ServiceServer control_srv_;
 	  ros::Publisher vel_pub_;
