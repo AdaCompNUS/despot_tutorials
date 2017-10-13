@@ -76,14 +76,14 @@ void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
   // laser_readings_[SOUTHWEST] = (int) round(scan->ranges[7]);
   std::vector<double> raw_readings;
   raw_readings.resize(8);
-  raw_readings[SOUTH]     = scan->ranges[0];
-  raw_readings[SOUTHEAST] = scan->ranges[1];
-  raw_readings[EAST]      = scan->ranges[2];
-  raw_readings[NORTHEAST] = scan->ranges[3];
-  raw_readings[NORTH]     = scan->ranges[4];
-  raw_readings[NORTHWEST] = scan->ranges[5];
-  raw_readings[WEST]      = scan->ranges[6];
-  raw_readings[SOUTHWEST] = scan->ranges[7];
+  raw_readings[SOUTH]     = scan->ranges[0] + 0.45;
+  raw_readings[SOUTHEAST] = scan->ranges[1] + 0.45 * sqrt(2.0);
+  raw_readings[EAST]      = scan->ranges[2] + 0.45;
+  raw_readings[NORTHEAST] = scan->ranges[3] + 0.45 * sqrt(2.0);
+  raw_readings[NORTH]     = scan->ranges[4] + 0.45;
+  raw_readings[NORTHWEST] = scan->ranges[5] + 0.45 * sqrt(2.0);
+  raw_readings[WEST]      = scan->ranges[6] + 0.45;
+  raw_readings[SOUTHWEST] = scan->ranges[7] + 0.45 * sqrt(2.0);
 
   double unit_size_ = 1;
   for (int d = 0; d < 8; d++) {

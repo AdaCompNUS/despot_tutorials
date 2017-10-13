@@ -9,8 +9,8 @@
   <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/>
   
   <!-- simplified box collision geometry for base -->
-  <property name="base_size_x" value="0.75"/>
-  <property name="base_size_y" value="0.75"/>
+  <property name="base_size_x" value="0.90"/>
+  <property name="base_size_y" value="0.90"/>
   <property name="base_size_z" value="0.5"/>
   <property name="base_mass" value="22.0"/>
   <property name="visual_z_offset" value="-0.16"/>

@@ -17,8 +17,8 @@
 	<arg name="R1_yaw" default="1.57"/>
 
 	<!-- Robot2 (thief) pose -->
-	<arg name="R2_x" default="5.5"/>
-	<arg name="R2_y" default="3.5"/>
+	<arg name="R2_x" default="6.5"/>
+	<arg name="R2_y" default="5.5"/>
 	<arg name="R2_z" default="0.085"/>
 	<arg name="R2_roll" default="0"/>
 	<arg name="R2_pitch" default="0"/>

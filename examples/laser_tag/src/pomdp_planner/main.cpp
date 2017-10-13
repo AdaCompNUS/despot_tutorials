@@ -42,6 +42,39 @@ public:
         srv.request.action = (int) action; // actions: 0 - North, 1 - East, 2 - South, 3 - West, 4 - Tag
         if (client.call(srv))
         {
+          if(action==4)
+          {
+	           obs=(OBS_TYPE)0;
+	           for (int dir = 0; dir < 8; dir++) {
+	               LaserTag::SetReading(obs, 101, dir);
+	           }
+            return 1;
+	        }
+          else 
+          {
+            // observations after executing actions
+            std::vector<int> laser_obs = srv.response.observations;
+
+            // print observations (metric readings rounded to the nearest integer)
+            ROS_INFO("Laser Observations");
+            ROS_INFO("North: %d"    , laser_obs[0]);
+            ROS_INFO("East: %d"     , laser_obs[1]);
+            ROS_INFO("South: %d"    , laser_obs[2]);
+            ROS_INFO("West: %d"     , laser_obs[3]);
+            ROS_INFO("NorthEast: %d", laser_obs[4]);
+            ROS_INFO("SouthEast: %d", laser_obs[5]);
+            ROS_INFO("SouthWest: %d", laser_obs[6]);
+            ROS_INFO("NorthWest: %d", laser_obs[7]);
+            
+            for (int dir = 0; dir < 8; dir++) {
+               LaserTag::SetReading(obs, laser_obs[dir], dir);
+            }
+            return 0;
+          }
+        }
+        else
+        {
+          ROS_ERROR("Invalid Action OR Invalid Tag");
           // observations after executing actions
           std::vector<int> laser_obs = srv.response.observations;
 
@@ -59,19 +92,6 @@ public:
           for (int dir = 0; dir < 8; dir++) {
              LaserTag::SetReading(obs, laser_obs[dir], dir);
           }
-          if(action==4){
-	     obs=(OBS_TYPE)0;
-	     for (int dir = 0; dir < 8; dir++) {
-	         LaserTag::SetReading(obs, 101, dir);
-	     }
-            return 1;
-	  }
-          else
-            return 0;
-        }
-        else
-        {
-          ROS_ERROR("Invalid Action OR Invalid Tag");
           return 0;
         }
     }
