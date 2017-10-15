@@ -83,11 +83,6 @@ public:
 		}
 
 		// If we just saw an opponent then TAG
-		if (history.LastObservation() == tag_model_->same_loc_obs_) {
-			return tag_model_->TagAction();
-		}
-
-		vector<ACT_TYPE> actions;
 		// Compute rob position
 		Coord rob;
 		if (tag_model_->same_loc_obs_ != floor_.NumCells()) {
@@ -95,6 +90,19 @@ public:
 		} else {
 			rob = floor_.GetCell(history.LastObservation());
 		}
+
+		// Compute rob position
+		Coord opp;
+		opp = tag_model_->MostLikelyOpponentPosition(particles);
+
+		double distance=Coord::ManhattanDistance(rob,opp);
+
+		if (distance<=1) {
+			return tag_model_->TagAction();
+		}
+
+		vector<ACT_TYPE> actions;
+		
 
 		// Don't double back and don't go into walls
 		for (int d = 0; d < 4; d++) {
@@ -541,6 +549,7 @@ BaseTag::~BaseTag() {
 
 bool BaseTag::Step(State& s, double random_num, ACT_TYPE action,
 	double& reward) const {
+
 	TagState& state = static_cast<TagState&>(s);
 
 	bool terminal = false;
@@ -819,21 +828,53 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 
 	int max_prob_id=-1;
 	double max_prob=0;
+	float rob_pos_map[11][7];	float opp_pos_map[11][7];
+	for(int i=0;i<11;i++)
+		for(int j=0;j<11;j++)
+		{
+			rob_pos_map[i][j]=0;
+			opp_pos_map[i][j]=0;
+		}
 	for (int i = 0; i < particles.size(); i++) {
 		State* particle = particles[i];
 		if(particle->weight > max_prob){
 			max_prob = particle->weight;
 			max_prob_id = i;
 		}
+		int rob= rob_[static_cast<TagState*>(particle)->state_id];
+		int opp= opp_[static_cast<TagState*>(particle)->state_id];
+		Coord rob_pos=floor_.GetCell(rob);
+		Coord opp_pos=floor_.GetCell(opp);
+		rob_pos_map[rob_pos.x][rob_pos.y]+=particle->weight;
+		opp_pos_map[opp_pos.x][opp_pos.y]+=particle->weight;		
 	}
 
-	out << "Maximum likelihood robot position:";
 	int rob= rob_[static_cast<TagState*>(particles[max_prob_id])->state_id];
 	int opp= opp_[static_cast<TagState*>(particles[max_prob_id])->state_id];
+	out << "Maximum likelihood robot position:";
 	out << floor_.GetCell(rob) << endl;
 
 	out << "Maximum likelihood target position:";
 	out << floor_.GetCell(opp) << endl;
+
+	out << "Robot position belief:" << endl;
+	for(int i=0;i<11;i++){
+		for(int j=0;j<11;j++){
+			cout.precision(3); 
+  			cout.width(5); 
+			cout  << rob_pos_map[i][j] <<"  ";
+		}
+		cout<< endl;
+	}
+	out << "Target position belief:" << endl;
+	for(int i=0;i<11;i++){
+		for(int j=0;j<11;j++){
+			cout.precision(3); 
+  			cout.width(5); 
+			cout << opp_pos_map[i][j] <<"  ";
+		}
+		cout<< endl;
+	}
 }
 
 void BaseTag::PrintAction(ACT_TYPE action, ostream& out) const {
