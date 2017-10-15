@@ -82,7 +82,6 @@ public:
 			return Random::RANDOM.NextInt(tag_model_->NumActions() - 1);
 		}
 
-		// If we just saw an opponent then TAG
 		// Compute rob position
 		Coord rob;
 		if (tag_model_->same_loc_obs_ != floor_.NumCells()) {
@@ -91,19 +90,19 @@ public:
 			rob = floor_.GetCell(history.LastObservation());
 		}
 
-		// Compute rob position
+		// Compute opp position
 		Coord opp;
 		opp = tag_model_->MostLikelyOpponentPosition(particles);
 
 		double distance=Coord::ManhattanDistance(rob,opp);
 
+		// If we just saw an opponent then TAG
 		if (distance<=1) {
 			return tag_model_->TagAction();
 		}
 
 		vector<ACT_TYPE> actions;
 		
-
 		// Don't double back and don't go into walls
 		for (int d = 0; d < 4; d++) {
 			if (!Compass::Opposite(d, history.LastAction())
