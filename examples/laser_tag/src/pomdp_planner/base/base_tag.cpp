@@ -830,7 +830,7 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 	double max_prob=0;
 	float rob_pos_map[11][7];	float opp_pos_map[11][7];
 	for(int i=0;i<11;i++)
-		for(int j=0;j<11;j++)
+		for(int j=0;j<7;j++)
 		{
 			rob_pos_map[i][j]=0;
 			opp_pos_map[i][j]=0;
@@ -859,7 +859,7 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 
 	out << "Robot position belief:" << endl;
 	for(int i=0;i<11;i++){
-		for(int j=0;j<11;j++){
+		for(int j=0;j<7;j++){
 			cout.precision(3); 
   			cout.width(5); 
 			cout  << rob_pos_map[i][j] <<"  ";
@@ -868,7 +868,7 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 	}
 	out << "Target position belief:" << endl;
 	for(int i=0;i<11;i++){
-		for(int j=0;j<11;j++){
+		for(int j=0;j<7;j++){
 			cout.precision(3); 
   			cout.width(5); 
 			cout << opp_pos_map[i][j] <<"  ";
