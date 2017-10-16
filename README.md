@@ -66,4 +66,4 @@ On a separate terminal, run the POMDP planner:
 $ rosrun laser_tag pomdp_planner
 ```
 
-You should see a 3D 7x11 grid world with two Youbots. The `R1_noise` parameter specifies the gaussian noise (standard deviation) in meters. 
+You should see a 3D 7x11 grid world with two Youbots. The `R1_noise` parameter specifies the gaussian noise (standard deviation) in meters.  
