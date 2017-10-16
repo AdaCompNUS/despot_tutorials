@@ -29,7 +29,7 @@ $ mkdir build; cd build
 
 $ cmake -DCMAKE_BUILD_TYPE=Release ../ 
 $ make
-# sudo make install
+$ sudo make install
 ```
 
 Install BOOST libraries with `sudo apt-get install libboost-all-dev` 
