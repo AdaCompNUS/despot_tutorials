@@ -190,7 +190,7 @@ bool LaserTagController::LaserTagActionObs(laser_tag::TagActionObs::Request &req
     }
     else
     {
-      ROS_INFO("Invalid Tag!");
+      ROS_WARN("Invalid Tag!");
     }
   }
 

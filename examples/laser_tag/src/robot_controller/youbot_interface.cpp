@@ -112,9 +112,9 @@ void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
       double max_noise = std::min(dist, (reading + 1) * unit_size_) - dist;
       double prob =
         2
-          * (gausscdf(max_noise, 0, DEFAULT_NOISE_SIGMA)
+          * (gausscdf(max_noise, 0, noise_sigma_)
             - (reading > 0 ?
-              gausscdf(min_noise, 0, DEFAULT_NOISE_SIGMA) : 0 ));
+              gausscdf(min_noise, 0, noise_sigma_) : 0 ));
 
       accum_p += prob;
 
