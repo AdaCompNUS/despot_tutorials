@@ -861,7 +861,7 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 		for(int i=0;i<11;i++){
 			cout.precision(3); 
   			cout.width(6); 
-			cout  << rob_pos_map[i][j] << "  ";
+			cout  << rob_pos_map[i][6-j] << "  ";
 		}
 		cout<< endl;
 	}
@@ -870,7 +870,7 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 		for(int i=0;i<11;i++){
 			cout.precision(3); 
   			cout.width(6); 
-			cout << opp_pos_map[i][j] << "  ";
+			cout << opp_pos_map[i][6-j] << "  ";
 		}
 		cout<< endl;
 	}
