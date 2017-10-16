@@ -857,20 +857,20 @@ void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {
 	out << floor_.GetCell(opp) << endl;
 
 	out << "Robot position belief:" << endl;
-	for(int i=0;i<11;i++){
-		for(int j=0;j<7;j++){
+	for(int j=0;j<7;j++){
+		for(int i=0;i<11;i++){
 			cout.precision(3); 
-  			cout.width(5); 
-			cout  << rob_pos_map[i][j] <<"  ";
+  			cout.width(6); 
+			cout  << rob_pos_map[i][j] << "  ";
 		}
 		cout<< endl;
 	}
 	out << "Target position belief:" << endl;
-	for(int i=0;i<11;i++){
-		for(int j=0;j<7;j++){
+	for(int j=0;j<7;j++){
+		for(int i=0;i<11;i++){
 			cout.precision(3); 
-  			cout.width(5); 
-			cout << opp_pos_map[i][j] <<"  ";
+  			cout.width(6); 
+			cout << opp_pos_map[i][j] << "  ";
 		}
 		cout<< endl;
 	}
