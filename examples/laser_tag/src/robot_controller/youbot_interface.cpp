@@ -1,14 +1,21 @@
 #include "youbot_interface.h"
 
-#define TRANS_GOAL_TOLERANCE 0.05f  // reach target with +-5cm deg tolerance
+#define TRANS_GOAL_TOLERANCE 0.05f  // reach target with +-5cm tolerance
 #define TRANS_SPEED_FACTOR 0.8f
+
+#define ROT_GOAL_TOLERANCE 0.0872f // reach target with +5 deg tolerance
+#define ROT_SPEED_FACTOR 0.8f
+
+#define NORTH_THETA 1.57 // 90 deg from x axis
 
 #define CONTROL_RATE 10 // hz
 #define NUM_LASER_DIRECTIONS 8
-#define CONTROL_TIMEOUT 6 // seconds
+#define CONTROL_TIMEOUT 6 // wait for 6 seconds before giving up on the p-control
 
 #define RANDOM_SEED 45
-#define NOISE_SIGMA 0.5
+#define DEFAULT_NOISE_SIGMA 0.5
+
+#define OBSTACLE_BOX_COLLIDER_SIZE 0.90 // meters
 
 // From despot/src/util/util.cpp
 double erf(double x) {
@@ -44,13 +51,25 @@ YoubotInterface::YoubotInterface()
    *  Initialize controller and laser interface for the Youbot robot (without KUKA arm)
    */
   
+  nh_ = ros::NodeHandlePtr(new ros::NodeHandle());
+
   laser_readings_.resize(NUM_LASER_DIRECTIONS);
   
-  control_srv_ = nh_.advertiseService("youbot_discrete_controller", &YoubotInterface::DiscreteController, this);
-  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+  control_srv_ = nh_->advertiseService("youbot_discrete_controller", &YoubotInterface::DiscreteController, this);
+  vel_pub_ = nh_->advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
-  base_pose_sub_ = nh_.subscribe<nav_msgs::Odometry>("odom", 30, &YoubotInterface::base_pose_cb, this);
-  laser_sub_ = nh_.subscribe<sensor_msgs::LaserScan>("laser_scan", 30, &YoubotInterface::laser_cb, this);
+  base_pose_sub_ = nh_->subscribe<nav_msgs::Odometry>("odom", 30, &YoubotInterface::base_pose_cb, this);
+  laser_sub_ = nh_->subscribe<sensor_msgs::LaserScan>("laser_scan", 30, &YoubotInterface::laser_cb, this);
+
+  if (nh_->getParam("youbot_interface/noise_sigma", noise_sigma_))
+  {
+    ROS_INFO("Setting laser noise sigma to: %f", noise_sigma_);
+  }
+  else
+  {
+    noise_sigma_ = DEFAULT_NOISE_SIGMA;
+    ROS_INFO("Setting laser to default noise sigma: %f", noise_sigma_);
+  }
 
   srand(RANDOM_SEED);
 }
@@ -63,24 +82,26 @@ void YoubotInterface::base_pose_cb(const nav_msgs::Odometry::ConstPtr& odom)
 
 void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
-  // Despot expects laser readings of empty cells (excluding the robot's cell) rounded to the nearest meter.
-  // Raw laser readings go from -180deg to 180deg with 0deg = North
-  
-  std::vector<double> raw_readings;
-  raw_readings.resize(8);
+  /*
+   * Despot expects laser readings of empty cells (excluding the robot's cell) rounded to the nearest meter.
+   * Raw laser readings go from -180deg to 180deg with 0deg = North
+   */
 
-  raw_readings[SOUTH]     = scan->ranges[0] + 0.45;
-  raw_readings[SOUTHEAST] = scan->ranges[1] + 0.45 * sqrt(2.0);
-  raw_readings[EAST]      = scan->ranges[2] + 0.45;
-  raw_readings[NORTHEAST] = scan->ranges[3] + 0.45 * sqrt(2.0);
-  raw_readings[NORTH]     = scan->ranges[4] + 0.45;
-  raw_readings[NORTHWEST] = scan->ranges[5] + 0.45 * sqrt(2.0);
-  raw_readings[WEST]      = scan->ranges[6] + 0.45;
-  raw_readings[SOUTHWEST] = scan->ranges[7] + 0.45 * sqrt(2.0);
+  std::vector<double> raw_readings;
+  raw_readings.resize(NUM_LASER_DIRECTIONS);
+
+  raw_readings[SOUTH]     = scan->ranges[0] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0);
+  raw_readings[SOUTHEAST] = scan->ranges[1] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0) * sqrt(2.0);
+  raw_readings[EAST]      = scan->ranges[2] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0);
+  raw_readings[NORTHEAST] = scan->ranges[3] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0) * sqrt(2.0);
+  raw_readings[NORTH]     = scan->ranges[4] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0);
+  raw_readings[NORTHWEST] = scan->ranges[5] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0) * sqrt(2.0);
+  raw_readings[WEST]      = scan->ranges[6] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0);
+  raw_readings[SOUTHWEST] = scan->ranges[7] + (OBSTACLE_BOX_COLLIDER_SIZE / 2.0) * sqrt(2.0);
 
   // sensor gaussian noise model
   double unit_size_ = 1;
-  for (int d = 0; d < 8; d++) {
+  for (int d = 0; d < NUM_LASER_DIRECTIONS; d++) {
     double r = ((double) rand() / (RAND_MAX));
     double accum_p = 0.0f;
     double dist = raw_readings[d]; 
@@ -91,9 +112,9 @@ void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
       double max_noise = std::min(dist, (reading + 1) * unit_size_) - dist;
       double prob =
         2
-          * (gausscdf(max_noise, 0, NOISE_SIGMA)
+          * (gausscdf(max_noise, 0, DEFAULT_NOISE_SIGMA)
             - (reading > 0 ?
-              gausscdf(min_noise, 0, NOISE_SIGMA) : 0 ));
+              gausscdf(min_noise, 0, DEFAULT_NOISE_SIGMA) : 0 ));
 
       accum_p += prob;
 
@@ -105,17 +126,29 @@ void YoubotInterface::laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
   }
 }
 
+geometry_msgs::Vector3 YoubotInterface::quat2euler(const geometry_msgs::Quaternion quat)
+{
+  geometry_msgs::Vector3 euler;
+  tf::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  tf::Matrix3x3 m(q); 
+  m.getRPY(euler.x, euler.y, euler.z);
+  return euler;
+}
+
 void YoubotInterface::Goto(float x, float y)
 {
   /*
-   *  Goto a given pose. No uncertainity involved in executing actions
+   *  Goto a given pose. No uncertainity involved in executing actions.
+   *  Simple P-controller.
    */
 
   float curr_x = base_pose_.position.x;
   float curr_y = base_pose_.position.y;
+  float curr_theta = this->quat2euler(base_pose_.orientation).z;
 
   float delta_x = x - curr_x;
   float delta_y = y - curr_y;
+  float delta_theta = NORTH_THETA - curr_theta;
   geometry_msgs::Twist cmd = geometry_msgs::Twist();
   ros::Rate loop_rate(CONTROL_RATE);
 
@@ -126,17 +159,21 @@ void YoubotInterface::Goto(float x, float y)
   vel_pub_.publish(cmd);
 
   ros::Time start_time = ros::Time::now();
-  while (ros::ok && (fabs(delta_x) > TRANS_GOAL_TOLERANCE || fabs(delta_y) > TRANS_GOAL_TOLERANCE) )
+  while (ros::ok && (fabs(delta_x) > TRANS_GOAL_TOLERANCE || fabs(delta_y) > TRANS_GOAL_TOLERANCE || fabs(delta_theta) > ROT_GOAL_TOLERANCE) )
   {
     curr_x = base_pose_.position.x;
     curr_y = base_pose_.position.y;
+    curr_theta = this->quat2euler(base_pose_.orientation).z;
 
     delta_x = x - curr_x;
     delta_y = y - curr_y;
+    delta_theta = NORTH_THETA - curr_theta;
 
     // transform vel to robot coordinate frame (90deg anti-clockwise rotation)
+    // TODO: use TF transform to do this
     cmd.linear.x =  delta_y * TRANS_SPEED_FACTOR;
     cmd.linear.y = -delta_x * TRANS_SPEED_FACTOR;
+    cmd.angular.z = delta_theta * ROT_SPEED_FACTOR;
     vel_pub_.publish(cmd);
 
     ros::Time curr_time = ros::Time::now();

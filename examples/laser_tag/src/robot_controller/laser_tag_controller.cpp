@@ -147,6 +147,9 @@ void LaserTagController::TargetSrvCall(LaserTagController::DIRECTION action)
 bool LaserTagController::LaserTagActionObs(laser_tag::TagActionObs::Request &req,
 					   laser_tag::TagActionObs::Response &res)
 {
+  // default tag status
+  res.tag_success = false;
+
   // check if action is valid
   if (req.action < 0 || req.action > 4)
   {
@@ -183,12 +186,11 @@ bool LaserTagController::LaserTagActionObs(laser_tag::TagActionObs::Request &req
     if ( (abs(delta_x) + abs(delta_y)) == 1)
     {
       ROS_INFO("!!!!!!!!!!!!!!!TAG!!!!!!!!!!!!!!!!!!!!");
-      return true;
+      res.tag_success = true;
     }
     else
     {
       ROS_INFO("Invalid Tag!");
-      return false;
     }
   }
 

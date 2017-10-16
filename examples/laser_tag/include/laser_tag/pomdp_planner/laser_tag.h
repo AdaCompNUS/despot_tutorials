@@ -21,9 +21,11 @@ private:
 public:
 	LaserTag();
 	LaserTag(std::string params_file);
+	LaserTag(std::string params_file, double noise_sigma);
 	double LaserRange(const State& state, int dir) const;
 	void Init();
 	int GetReading(int);
+	void NoiseSigma(double noise_sigma);
 
 	bool Step(State& state, double random_num, ACT_TYPE action, double& reward) const;
 	bool Step(State& state, double random_num, ACT_TYPE action,

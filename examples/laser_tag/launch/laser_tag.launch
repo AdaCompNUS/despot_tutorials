@@ -15,6 +15,7 @@
 	<arg name="R1_roll" default="0"/>
 	<arg name="R1_pitch" default="0"/>
 	<arg name="R1_yaw" default="1.57"/>
+	<arg name="R1_noise" default="0.5"/>
 
 	<!-- Robot2 (thief) pose -->
 	<arg name="R2_x" default="6.5"/>
@@ -23,6 +24,7 @@
 	<arg name="R2_roll" default="0"/>
 	<arg name="R2_pitch" default="0"/>
 	<arg name="R2_yaw" default="1.57"/>
+	<arg name="R2_noise" default="0.0"/>
 
 	<!-- Laser Tag world -->
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -59,7 +61,9 @@
 		</node>
 
 		<!-- Youbot high-level interface -->
-		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface" output="screen"/>
+		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface" output="screen">
+		  <param name="noise_sigma" type="double" value="$(arg R1_noise)"/>
+		</node>
 	</group>
 
 	<!-- Thief -->
@@ -86,7 +90,9 @@
 		</node>
 
 		<!-- Youbot high-level interface -->
-		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface" output="screen"/>
+		<node pkg="laser_tag" type="youbot_interface" name="youbot_interface" output="screen">
+			<param name="noise_sigma" type="double" value="$(arg R2_noise)"/>
+		</node>
 	</group>
 
 	<!-- High level laser tag controller -->

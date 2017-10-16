@@ -8,6 +8,11 @@
 
 using namespace despot;
 
+#define TAG 4
+#define DEFAULT_NOISE_SIGMA 0.5
+
+double noise_sigma_ = DEFAULT_NOISE_SIGMA;
+
 class LaserTagWorld: public World {
 public:
 
@@ -24,6 +29,15 @@ public:
         // wait for controller service to show up (waits forever)
         ros::service::waitForService("laser_tag_action_obs", -1);
         
+        // initalize laser
+        if (nh->getParam("/robot/youbot_interface/noise_sigma", noise_sigma_))
+        {
+          ROS_INFO("Initialized laser with noise: %f stddev.", noise_sigma_);
+        }
+        else
+        {
+          ROS_INFO("Initialized laser with default noise: %f stddev.", noise_sigma_);
+        }
         // setup service client
         client = nh->serviceClient<laser_tag::TagActionObs>("laser_tag_action_obs");
     }
@@ -42,7 +56,7 @@ public:
         srv.request.action = (int) action; // actions: 0 - North, 1 - East, 2 - South, 3 - West, 4 - Tag
         if (client.call(srv))
         {
-          if(action==4)
+          if(action == TAG && srv.response.tag_success == true)
           {
 	           obs=(OBS_TYPE)0;
 	           for (int dir = 0; dir < 8; dir++) {
@@ -74,24 +88,7 @@ public:
         }
         else
         {
-          ROS_ERROR("Invalid Action OR Invalid Tag");
-          // observations after executing actions
-          std::vector<int> laser_obs = srv.response.observations;
-
-          // print observations (metric readings rounded to the nearest integer)
-          ROS_INFO("Laser Observations");
-          ROS_INFO("North: %d"    , laser_obs[0]);
-          ROS_INFO("East: %d"     , laser_obs[1]);
-          ROS_INFO("South: %d"    , laser_obs[2]);
-          ROS_INFO("West: %d"     , laser_obs[3]);
-          ROS_INFO("NorthEast: %d", laser_obs[4]);
-          ROS_INFO("SouthEast: %d", laser_obs[5]);
-          ROS_INFO("SouthWest: %d", laser_obs[6]);
-          ROS_INFO("NorthWest: %d", laser_obs[7]);
-          
-          for (int dir = 0; dir < 8; dir++) {
-             LaserTag::SetReading(obs, laser_obs[dir], dir);
-          }
+          ROS_ERROR("Failed to execute action & receive observations. Something went wrong with the robot controller!");
           return 0;
         }
     }
@@ -116,6 +113,7 @@ public:
       world->Connect();
       //Initialize the state of the external system
       world->Initialize();
+      static_cast<LaserTag*>(model)->NoiseSigma(noise_sigma_);
       //Inform despot the type of world
       world_type = "simulator";
       return world; 

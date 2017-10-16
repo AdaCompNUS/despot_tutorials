@@ -32,6 +32,14 @@ LaserTag::LaserTag(string params_file) :
   robot_pos_unknown_ = false;
 }
 
+LaserTag::LaserTag(string params_file, double noise_sigma) :
+	BaseTag(params_file),
+	unit_size_(1.0) {
+	Init();
+  robot_pos_unknown_ = false;
+  noise_sigma_ = noise_sigma;
+}
+
 double LaserTag::LaserRange(const State& state, int dir) const {
 	Coord rob = floor_.GetCell(rob_[state.state_id]), opp = floor_.GetCell(
 		opp_[state.state_id]);
@@ -186,6 +194,11 @@ void LaserTag::Observe(const Belief* belief, ACT_TYPE action,
 	map<OBS_TYPE, double>& obss) const {
 	cerr << "Exit: Two many observations!" << endl;
 	exit(0);
+}
+
+void LaserTag::NoiseSigma(double noise_sigma)
+{
+	noise_sigma_ = noise_sigma;
 }
 
 } // namespace despot

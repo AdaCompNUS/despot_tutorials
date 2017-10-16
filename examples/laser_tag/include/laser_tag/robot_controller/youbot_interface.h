@@ -37,16 +37,18 @@ class YoubotInterface
 	  
 	private:
 	  
-	  ros::NodeHandle nh_;
+	  ros::NodeHandlePtr nh_;
 
 	  ros::Subscriber base_pose_sub_;
-          ros::Subscriber laser_sub_;
+      ros::Subscriber laser_sub_;
 
 	  geometry_msgs::Pose base_pose_;
       std::vector<int> laser_readings_;
 	  
 	  ros::ServiceServer control_srv_;
 	  ros::Publisher vel_pub_;
+
+	  float noise_sigma_;
 
 	  void base_pose_cb(const nav_msgs::Odometry::ConstPtr& odom);
 	  void laser_cb(const sensor_msgs::LaserScan::ConstPtr& scan);

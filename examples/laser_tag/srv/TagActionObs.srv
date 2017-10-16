@@ -7,3 +7,4 @@
 int32 action
 ---
 int32[] observations 
+bool tag_success
