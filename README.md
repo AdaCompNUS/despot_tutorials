@@ -60,10 +60,10 @@ Launch the Gazebo environment and robot controllers:
 ```bash
 $ roslaunch laser_tag laser_tag.launch R1_noise:=0.5
 ```
-You should see a 3D 7x11 grid world with two Youbots. The `R1_noise` parameter specifies the gaussian noise (standard deviation) in meters. 
 
-<br></br>
-Run the POMDP planner:
+On a separate terminal, run the POMDP planner:
 ```bash
 $ rosrun laser_tag pomdp_planner
 ```
+
+You should see a 3D 7x11 grid world with two Youbots. The `R1_noise` parameter specifies the gaussian noise (standard deviation) in meters. 
