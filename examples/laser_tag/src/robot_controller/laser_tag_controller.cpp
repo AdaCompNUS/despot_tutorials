@@ -52,6 +52,8 @@ std::string LaserTagController::ActionToString(int action)
     return "South";
   else if (action == WEST)
     return "West";
+  else if (action == STAY)
+    return "Stay";
 }
 
 bool LaserTagController::CheckCollision(LaserTagController::DIRECTION direction)
@@ -152,6 +154,25 @@ bool LaserTagController::LaserTagActionObs(laser_tag::TagActionObs::Request &req
     return false;
   }
 
+  // plan evasive action for target
+  LaserTagController::DIRECTION next_target_action = this->TargetNextAction();
+  next_target_action = (this->CheckCollision(next_target_action) || req.action == 4) ? STAY : next_target_action;
+  
+  boost::thread thread_target, thread_robot;
+  
+  // send commands to robot and target 
+  if (next_target_action != STAY)
+    thread_target = boost::thread(boost::bind(&LaserTagController::TargetSrvCall, this, next_target_action));
+  thread_robot = boost::thread(boost::bind(&LaserTagController::RobotSrvCall, this, req.action));
+
+  // wait for robot and target to finish
+  if (next_target_action != STAY)
+    thread_target.join();
+  thread_robot.join();
+
+  // latest observations
+  res.observations = robot_obs_;
+
   // check if Tag
   if (req.action == 4)
   {
@@ -171,24 +192,6 @@ bool LaserTagController::LaserTagActionObs(laser_tag::TagActionObs::Request &req
     }
   }
 
-  // plan evasive action for target
-  LaserTagController::DIRECTION next_target_action = this->TargetNextAction();
-  next_target_action = this->CheckCollision(next_target_action) ? STAY : next_target_action;
-  
-  boost::thread thread_target, thread_robot;
-  
-  // send commands to robot and target 
-  if (next_target_action != STAY)
-    thread_target = boost::thread(boost::bind(&LaserTagController::TargetSrvCall, this, next_target_action));
-  thread_robot = boost::thread(boost::bind(&LaserTagController::RobotSrvCall, this, req.action));
-
-  // wait for robot and target to finish
-  if (next_target_action != STAY)
-    thread_target.join();
-  thread_robot.join();
-
-  // return new laser readings
-  res.observations = robot_obs_;
   return true;
 }
 
