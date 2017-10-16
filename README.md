@@ -22,7 +22,15 @@ Dependencies: DESPOT, ROS Indigo, Boost 1.55, Gazebo
 Install [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu).
 We recommend `ros-indigo-desktop-full` version which includes Gazebo.  
 
-Install DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed with `sudo make install` 
+Install DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed.
+```bash
+$ cd <latest_despot_repo>
+$ mkdir build; cd build
+
+$ cmake -DCMAKE_BUILD_TYPE=Release ../ 
+$ make
+# sudo make install
+```
 
 Install BOOST libraries with `sudo apt-get install libboost-all-dev` 
 
@@ -66,4 +74,4 @@ On a separate terminal, run the POMDP planner:
 $ rosrun laser_tag pomdp_planner
 ```
 
-You should see a 3D 7x11 grid world with two Youbots. The green robot should chase the red robot until 'Tag' is called. The `R1_noise` parameter specifies the gaussian noise (standard deviation) of the green robot's laser range finder in meters.  
+You should see a 3D 7x11 grid world with two Youbots. The green robot should chase the red robot until 'Tag' is called. The `R1_noise` parameter specifies the gaussian noise (standard deviation in meters) of the green robot's laser range finder.  
