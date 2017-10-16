@@ -15,14 +15,14 @@ Tested Operating Systems:
 | :-------------: 
 |[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)    
 
-Dependencies: DESPOT, ROS Indigo, Boost 1.55, Gazebo
+Dependencies: DESPOT, ROS Indigo+, Boost 1.55+, Gazebo 2+
 
 ## Prerequisites
 
 Install [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu).
 We recommend `ros-indigo-desktop-full` version which includes Gazebo.  
 
-Install DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed.
+Install the latest DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed.
 ```bash
 $ cd <latest_despot_repo>
 $ mkdir build; cd build
