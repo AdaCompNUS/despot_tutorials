@@ -77,7 +77,7 @@
       <visual>
         <origin xyz="0 0 ${visual_z_offset}" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://youbot_description/meshes/youbot_base/base.dae"/>
+          <mesh filename="package://youbot_description/meshes/youbot_base/target.dae"/>
         </geometry>
         <material name="DarkGrey"/>
       </visual>

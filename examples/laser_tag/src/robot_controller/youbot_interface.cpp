@@ -122,6 +122,7 @@ void YoubotInterface::Goto(float x, float y)
   // stop moving
   cmd.linear.x = 0.0f;
   cmd.linear.y = 0.0f;
+  cmd.angular.z = 0.0f;
   vel_pub_.publish(cmd);
 
   ros::Time start_time = ros::Time::now();
@@ -150,6 +151,7 @@ void YoubotInterface::Goto(float x, float y)
   // stop moving
   cmd.linear.x = 0.0f;
   cmd.linear.y = 0.0f;
+  cmd.angular.z = 0.0f;
   vel_pub_.publish(cmd);
   
 }
