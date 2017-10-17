@@ -86,7 +86,7 @@ In general, to use DESPOT with real-world systems:
     * Implement the `Connect` and `Initialize` functions in `World` to estabilish connections with your system and        intitialize it if possible.
     * Implement the `ExecuteAction` function in `World` to send actions to your system and receive observations from it in the formats specified in your POMDP model (e.g: `ACT_TYPE` & `OBS_TYPE` parameters).
 3. Initialize your planner by inheirting the `Planner` class. (See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
-    * Provide the planner your POMDP model and custom world by implementing the `InitializeModel` ans `InitializeWorld` functions.
+    * Provide the planner your POMDP model and custom world by implementing the `InitializeModel` and `InitializeWorld` functions.
     * Choose "DESPOT" to be the solver by implementing `ChooseSolver`.
     * Setup default parameters, such as the number of scenarios, search time per step, etc., by implementing `InitializeDefaultParameters`.
 4. Launch the planning pipeline in your main function by calling the `runPlanning` function in `Planner`. (See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
