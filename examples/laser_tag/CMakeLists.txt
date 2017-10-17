@@ -48,8 +48,8 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  include/laser_tag/robot_controller
-  include/laser_tag/pomdp_planner
+  include/robot_controller
+  include/pomdp_planner
 )
 
 ## Declare a C++ executable
