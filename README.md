@@ -27,6 +27,7 @@ We recommend the `ros-indigo-desktop-full` version which includes Gazebo.
 Install the latest DESPOT using [CMakeLists](https://github.com/AdaCompNUS/despot#cmakelists). Make sure that DESPOT binaries and header files are installed.
 ```bash
 $ cd <latest_despot_repo>
+$ git checkout API_redesign # temporary, will be merged into master
 $ mkdir build; cd build
 
 $ cmake -DCMAKE_BUILD_TYPE=Release ../ 
