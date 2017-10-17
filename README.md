@@ -2,7 +2,7 @@
 
 ![](images/gazebo_screenshot.png)
 
-An example of using [DESPOT](https://github.com/AdaCompNUS/despot) with real-robots via ROS. We present a slightly modified version of the Laser Tag problem: a robot with noisy laser-range sensors chases a target inside an environment with known obstacles. Initially, the robot is aware of neither the target's location nor its own location. When the robot is adjacent to the target, it calls 'Tag' to terminate a successful pursuit. The simulation consists of two holonomic robots ([KUKA Youbot](http://www.youbot-store.com/)) inside a [Gazebo](http://gazebosim.org/) environment resembling the problem world described in DESPOT paper (Page 20) [1].
+An example of using [DESPOT](https://github.com/AdaCompNUS/despot) with real-robots via ROS. We present a slightly modified version of the *Laser Tag* problem: a robot trying to find and tag a target which intentionally runs away inside an known environment. The robot is equiped with a noisy laser-range sensor to measure distances in eight directions. Initially, the robot is aware of neither the target's location nor its own location. In each step, the robot can move to the four adjacent positions. When the robot is adjacent to the target, it can call 'Tag' to terminate a successful pursuit. The simulation consists of two holonomic robots ([KUKA Youbot](http://www.youbot-store.com/)) inside a [Gazebo](http://gazebosim.org/) environment resembling the problem world described in DESPOT paper (Page 20) [1].
 
 
 [1] N. Ye, A. Somani, D. Hsu, and W. Lee. [**DESPOT: Online POMDP planning with regularization**](http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-content/uploads/2017/08/jair14.pdf). J. Artificial Intelligence Research, 58:231–266, 2017.
@@ -83,15 +83,15 @@ You should see a 3D 7x11 grid world with two Youbots. The green robot should cha
 
 In general, to use DESPOT with real-world systems: 
 1. Define your POMDP model by inheriting the `DSPOMDP` class. <br />
-*(See class `LaserTag` and its parent class `BaseTag` in [laser_tag.h](examples/laser_tag/include/pomdp_planner/laser_tag.h) and [base/base_tag.h](examples/laser_tag/include/pomdp_planner/base/base_tag.h)).*
+*(See class `LaserTag` and its parent class `BaseTag` in [laser_tag.h](examples/laser_tag/include/pomdp_planner/laser_tag.h) and [base/base_tag.h](examples/laser_tag/include/pomdp_planner/base/base_tag.h).)*
 2. Setup an interface to communicate with your systems by inheriting the `World` abstract class. <br />
-*(See class `LaserTagWorld` in [laser_tag_world.h](examples/laser_tag/include/pomdp_planner/laser_tag_world.h) and [laser_tag_world.cpp](examples/laser_tag/src/pomdp_planner/laser_tag_world.cpp)).*
+*(See class `LaserTagWorld` in [laser_tag_world.h](examples/laser_tag/include/pomdp_planner/laser_tag_world.h) and [laser_tag_world.cpp](examples/laser_tag/src/pomdp_planner/laser_tag_world.cpp).)*
     * Implement the `Connect` and `Initialize` functions in `World` to estabilish connections with your system and        intitialize it if possible.
     * Implement the `ExecuteAction` function in `World` to send actions to your system and receive observations from it in the formats specified in your POMDP model (e.g: `ACT_TYPE` & `OBS_TYPE` parameters).
 3. Initialize your planner by inheirting the `Planner` class. <br />
-*(See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).*
+*(See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp).)*
     * Provide the planner your POMDP model and custom world by implementing the `InitializeModel` and `InitializeWorld` functions.
     * Choose "DESPOT" to be the solver by implementing `ChooseSolver`.
     * Setup default parameters, such as the number of scenarios, search time per step, etc., by implementing `InitializeDefaultParameters`.
 4. Launch the planning pipeline in your main function by calling the `runPlanning` function in `Planner`. <br />
-*(See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).*
+*(See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp).)*
