@@ -81,7 +81,7 @@ You should see a 3D 7x11 grid world with two Youbots. The green robot should cha
 ## Guidelines
 
 In general, to use DESPOT with real-world systems: 
-1. Setup an interface to communicate with your systems by inheriting the `World` abstract class. (See class `LaserTagWorld` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
+1. Setup an interface to communicate with your systems by inheriting the `World` abstract class. (See class `LaserTagWorld` in [laser_tag_world.cpp](examples/laser_tag/src/pomdp_planner/laser_tag_world.cpp)).
     * Implement the `Connect` and `Initialize` functions in `World` to estabilish connections with your system and        intitialize it if possible.
     * Implement the `ExecuteAction` function in `World` to send actions to your system and receive observations from it in the formats specified in your POMDP model (e.g: `ACT_TYPE` & `OBS_TYPE` parameters).
 2. Initialize your planner by inheirting the `Planner` class. (See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
