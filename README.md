@@ -1,6 +1,6 @@
 # DESPOT Tutorials
 
-An example of using [DESPOT](https://github.com/AdaCompNUS/despot) with real-robots via ROS. We present a slightly modified version of the Laser Tag problem: a robot chases a target by using a noisy laser-sensor to observe its environment. When the robot is adjacent to the target, it calls 'Tag' to terminate a successful pursuit. The simulation consists of two holonomic robots ([KUKA Youbot](http://www.youbot-store.com/)) inside a [Gazebo](http://gazebosim.org/) environment resembling the problem world described in DESPOT paper (Page 20) [1].
+An example of using [DESPOT](https://github.com/AdaCompNUS/despot) with real-robots via ROS. We present a slightly modified version of the Laser Tag problem: a robot chases a target by using noisy laser-sensors to observe its environment. When the robot is adjacent to the target, it calls 'Tag' to terminate a successful pursuit. The simulation consists of two holonomic robots ([KUKA Youbot](http://www.youbot-store.com/)) inside a [Gazebo](http://gazebosim.org/) environment resembling the problem world described in DESPOT paper (Page 20) [1].
 
 
 [1] N. Ye, A. Somani, D. Hsu, and W. Lee. [**DESPOT: Online POMDP planning with regularization**](http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-content/uploads/2017/08/jair14.pdf). J. Artificial Intelligence Research, 58:231–266, 2017.
