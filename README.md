@@ -82,12 +82,16 @@ You should see a 3D 7x11 grid world with two Youbots. The green robot should cha
 ## Guidelines
 
 In general, to use DESPOT with real-world systems: 
-1. Define your POMDP model by inheriting the `DSPOMDP` class. (See class `LaserTag` and its parent class `BaseTag` in [laser_tag.h](examples/laser_tag/include/pomdp_planner/laser_tag.h) and [base/base_tag.h](examples/laser_tag/include/pomdp_planner/base/base_tag.h)).
-2. Setup an interface to communicate with your systems by inheriting the `World` abstract class. (See class `LaserTagWorld` in [laser_tag_world.h](examples/laser_tag/include/pomdp_planner/laser_tag_world.h) and [laser_tag_world.cpp](examples/laser_tag/src/pomdp_planner/laser_tag_world.cpp)).
+1. Define your POMDP model by inheriting the `DSPOMDP` class. <br />
+*(See class `LaserTag` and its parent class `BaseTag` in [laser_tag.h](examples/laser_tag/include/pomdp_planner/laser_tag.h) and [base/base_tag.h](examples/laser_tag/include/pomdp_planner/base/base_tag.h)).*
+2. Setup an interface to communicate with your systems by inheriting the `World` abstract class. <br />
+*(See class `LaserTagWorld` in [laser_tag_world.h](examples/laser_tag/include/pomdp_planner/laser_tag_world.h) and [laser_tag_world.cpp](examples/laser_tag/src/pomdp_planner/laser_tag_world.cpp)).*
     * Implement the `Connect` and `Initialize` functions in `World` to estabilish connections with your system and        intitialize it if possible.
     * Implement the `ExecuteAction` function in `World` to send actions to your system and receive observations from it in the formats specified in your POMDP model (e.g: `ACT_TYPE` & `OBS_TYPE` parameters).
-3. Initialize your planner by inheirting the `Planner` class. (See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
+3. Initialize your planner by inheirting the `Planner` class. <br />
+*(See class `MyPlanner` in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).*
     * Provide the planner your POMDP model and custom world by implementing the `InitializeModel` and `InitializeWorld` functions.
     * Choose "DESPOT" to be the solver by implementing `ChooseSolver`.
     * Setup default parameters, such as the number of scenarios, search time per step, etc., by implementing `InitializeDefaultParameters`.
-4. Launch the planning pipeline in your main function by calling the `runPlanning` function in `Planner`. (See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).
+4. Launch the planning pipeline in your main function by calling the `runPlanning` function in `Planner`. <br />
+*(See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp)).*
