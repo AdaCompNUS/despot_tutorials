@@ -1,5 +1,7 @@
 # DESPOT Tutorials
 
+![](images/gazebo_screenshot.png)
+
 An example of using [DESPOT](https://github.com/AdaCompNUS/despot) with real-robots via ROS. We present a slightly modified version of the Laser Tag problem: a robot chases a target by using noisy laser-sensors to observe its environment. When the robot is adjacent to the target, it calls 'Tag' to terminate a successful pursuit. The simulation consists of two holonomic robots ([KUKA Youbot](http://www.youbot-store.com/)) inside a [Gazebo](http://gazebosim.org/) environment resembling the problem world described in DESPOT paper (Page 20) [1].
 
 
