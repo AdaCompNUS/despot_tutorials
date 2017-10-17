@@ -75,7 +75,7 @@ bool LaserTagWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE& obs){
 		// continue to observe
 		else 
 		{
-			// observations after executing actions
+			// observations after executing action
 			std::vector<int> laser_obs = srv.response.observations;
 
 			// print observations 
