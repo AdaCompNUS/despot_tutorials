@@ -95,3 +95,6 @@ In general, to use DESPOT with real-world systems:
     * Setup default parameters, such as the number of scenarios, search time per step, etc., by implementing `InitializeDefaultParameters`.
 4. Launch the planning pipeline in your main function by calling the `runPlanning` function in `Planner`. <br />
 *(See the main function in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp).)*
+5. (Optional) Overwrite *Planner::PlanningLoop* to customize your planning pipeline, and overwrite *Planner::runStep* to customize the search-execute-update step inside the planning loop.
+*(See the PlanningLoop and runStep functions in [main.cpp](examples/laser_tag/src/pomdp_planner/main.cpp).)*
+
