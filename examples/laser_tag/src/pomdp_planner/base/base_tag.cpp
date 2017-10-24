@@ -135,6 +135,7 @@ public:
 class TagHistoryModePolicy: public DefaultPolicy {
 private:
 	const BaseTag* tag_model_;
+	Belief* belief_;
 	Floor floor_;
 
 	int first_action_;
@@ -395,8 +396,8 @@ private:
 	const BaseTag* tag_model_;
 
 public:
-	TagBlindBeliefPolicy(const BaseTag* model, Belief* belief = NULL) :
-		BeliefLowerBound(model, belief),
+	TagBlindBeliefPolicy(const BaseTag* model) :
+		BeliefLowerBound(model),
 		tag_model_(model) {
 		const_cast<BaseTag*>(tag_model_)->ComputeBlindAlpha();
 	}

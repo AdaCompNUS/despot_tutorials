@@ -36,6 +36,46 @@ public:
   std::string ChooseSolver(){
 	  return "DESPOT";
   }
+
+  /*Customize your planning pipeline by overloading the following function if necessary*/
+  void PlanningLoop(Solver*& solver, World* world, Logger* logger) {
+    for (int i = 0; i < Globals::config.sim_len; i++) {
+      bool terminal = RunStep(solver, world, logger);
+      if (terminal)
+        break;
+    }
+  }
+
+  /*Customize the inner step of the planning pipeline by overloading the following function if necessary*/
+  bool RunStep(Solver* solver, World* world, Logger* logger) {
+    logger->CheckTargetTime();
+
+    double step_start_t = get_time_second();
+
+    double start_t = get_time_second();
+    ACT_TYPE action = solver->Search().action;
+    double end_t = get_time_second();
+    double search_time = (end_t - start_t);
+    logi << "[Custom RunStep] Time spent in " << typeid(*solver).name()
+        << "::Search(): " << search_time << endl;
+
+    OBS_TYPE obs;
+    start_t = get_time_second();
+    bool terminal = world->ExecuteAction(action, obs);
+    end_t = get_time_second();
+    double execute_time = (end_t - start_t);
+    logi << "[Custom RunStep] Time spent in ExecuteAction(): " << execute_time << endl;
+
+    start_t = get_time_second();
+    solver->BeliefUpdate(action, obs);
+    end_t = get_time_second();
+    double update_time = (end_t - start_t);
+    logi << "[Custom RunStep] Time spent in Update(): " << update_time << endl;
+
+    return logger->SummarizeStep(step_++, round_, terminal, action, obs,
+        step_start_t);
+  }
+
 };
 
 int main(int argc, char* argv[]) {
