@@ -79,5 +79,5 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-  return MyPlanner().runPlanning(argc, argv);
+  return MyPlanner().RunPlanning(argc, argv);
 }
