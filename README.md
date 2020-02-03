@@ -7,7 +7,7 @@ In this tutorial, we present an example of using [DESPOT](https://github.com/Ada
 
 [1] N. Ye, A. Somani, D. Hsu, and W. Lee. [**DESPOT: Online POMDP planning with regularization**](http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-content/uploads/2017/08/jair14.pdf). J. Artificial Intelligence Research, 58:231–266, 2017.
 
-[Copyright &copy; 2014-2017 by National University of Singapore](http://motion.comp.nus.edu.sg/).
+[Copyright &copy; 2014-2020 by National University of Singapore](http://motion.comp.nus.edu.sg/).
 
 ## Requirements
 
