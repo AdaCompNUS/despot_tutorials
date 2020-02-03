@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<root xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+<root xmlns:xacro="http://www.ros.org/wiki/xacro/#interface">
   
   <xacro:include filename="$(find youbot_description)/urdf/sensors/asus_xtion_camera.gazebo.xacro" />
   
-  <property name="eye_x_offset" value="0.03" />
-  <property name="eye_y_offset" value="0.035" />
+  <xacro:property name="eye_x_offset" value="0.03" />
+  <xacro:property name="eye_y_offset" value="0.035" />
   
   <xacro:macro name="asus_xtion_eye" params="suffix parent *origin">
 	<link name="${parent}_${suffix}_frame">
@@ -18,7 +18,7 @@
 	<joint name="${parent}_${suffix}_joint" type="fixed">
 	  <parent link="${parent}_camera"/>
 	  <child link="${parent}_${suffix}_frame"/>
-	  <insert_block name="origin"/>
+	  <xacro:insert_block name="origin"/>
 	</joint>		
   </xacro:macro>
     
@@ -47,7 +47,7 @@
     </link>
     
     <joint name="${name}_foot_joint" type="fixed">
-      <insert_block name="origin" />
+      <xacro:insert_block name="origin" />
       <parent link="${parent}"/>
       <child link="${name}_foot_link"/>
     </joint>

@@ -1,3 +1,14 @@
+gazebo_ros_control/pid_gains:
+    wheel_joint_fl: {p: 100.0, i: 0.0, d: 1.0}
+    caster_joint_fl: {p: 100.0, i: 0.0, d: 1.0}
+    wheel_joint_fr: {p: 100.0, i: 0.0, d: 1.0}
+    caster_joint_fr: {p: 100.0, i: 0.0, d: 1.0}
+    wheel_joint_bl: {p: 100.0, i: 0.0, d: 1.0}
+    caster_joint_bl: {p: 100.0, i: 0.0, d: 1.0}
+    wheel_joint_br: {p: 100.0, i: 0.0, d: 1.0}
+    caster_joint_br: {p: 100.0, i: 0.0, d: 1.0}
+    
+
 joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 100
