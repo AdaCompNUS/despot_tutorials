@@ -13,7 +13,7 @@ In this tutorial, we present an example of using [DESPOT](https://github.com/Ada
 
 Tested Operating Systems:
 
-| Ubuntu 14.04     
+| Ubuntu 18.04     
 | :-------------: 
 |[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)    
 
