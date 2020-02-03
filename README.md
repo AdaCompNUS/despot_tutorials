@@ -17,9 +17,7 @@ Tested Operating Systems:
 | :-------------: 
 |[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)    
 
-Dependencies:
-`master` branch: DESPOT, ROS Indigo+, Boost 1.55+, Gazebo 2+
-`ros_melodic` branch: DESPOT, ROS Melodic, Boost 1.55+
+Dependencies: DESPOT, ROS Melodic, Boost 1.55+
 
 ## Prerequisites
 
