@@ -38,6 +38,8 @@ bool LaserTagWorld::Connect(){
 
 	// setup service client
 	client = nh->serviceClient<laser_tag::TagActionObs>("laser_tag_action_obs");
+
+    return true;
 }
 
 //Initialize or reset the environment (for simulators or POMDP world only), return the start state of the system if applicable
