@@ -20,7 +20,7 @@ bool LaserTagWorld::Connect(){
 	// initialize ROS node
 	int argc;
 	char ** argv;
-	ros::init(argc, argv, "test_laser_tag");
+	ros::init(argc, argv, "testLaserTag");
 	nh = ros::NodeHandlePtr(new ros::NodeHandle);
 
 	// get laser's noise sigma

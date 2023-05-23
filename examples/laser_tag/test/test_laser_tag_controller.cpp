@@ -7,7 +7,7 @@
 int main(int argc, char **argv)
 {
   // initilize ROS node. Should be done just once
-  ros::init(argc, argv, "test_laser_tag");
+  ros::init(argc, argv, "testLaserTag");
   ros::NodeHandle nh;
   
   // wait for controller service to show up (waits forever)
