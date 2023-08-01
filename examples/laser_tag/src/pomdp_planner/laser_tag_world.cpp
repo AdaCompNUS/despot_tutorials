@@ -71,6 +71,7 @@ bool LaserTagWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE& obs){
 			obs=(OBS_TYPE)0;
 			for (int dir = 0; dir < NUM_LASER_DIRECTIONS; dir++) {
 				LaserTag::SetReading(obs, TERMINATION_OBSERVATION, dir);
+                cout<<"Tagged Observation:"<<obs<<endl;
 			}
 			return 1; // exit
 		}
@@ -93,6 +94,7 @@ bool LaserTagWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE& obs){
 
 			for (int dir = 0; dir < 8; dir++) {
 			LaserTag::SetReading(obs, laser_obs[dir], dir);
+            cout<<"Observation:"<<obs<<endl;
 			}
 			return 0; // continue
 		}

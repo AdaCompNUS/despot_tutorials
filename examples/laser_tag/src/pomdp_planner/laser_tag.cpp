@@ -168,7 +168,7 @@ Belief* LaserTag::InitialBelief(const State* start, string type) const {
 			particles.push_back(state);
 		}
 	}
-
+    cout<<"Initial belief particles size:"<<particles.size()<<endl; // 4761 particles - matching with Java
 	ParticleBelief* belief = new ParticleBelief(particles, this);
 	belief->state_indexer(this);
 	return belief;

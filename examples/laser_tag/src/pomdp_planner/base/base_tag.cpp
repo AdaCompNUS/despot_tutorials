@@ -73,10 +73,16 @@ public:
 		DefaultPolicy(model, bound),
 		tag_model_(static_cast<const BaseTag*>(model)) {
 		floor_ = tag_model_->floor();
+//        cout<<"ISIDE TAGSHRPolciy"<<endl;
 	}
 
 	ACT_TYPE Action(const vector<State*>& particles, RandomStreams& streams,
 		History& history) const {
+//        cout<<"Got particles:"<<particles.size()<<endl;
+//            if(particles.size()>1){
+//                cout<<"Got particles:"<<particles.size()<<endl;
+//            }
+//        cout<<"ISIDE TAGSHRPolciy Action"<<endl;
 		// If history is empty then take a random move
 		if (history.Size() == 0) {
 			return Random::RANDOM.NextInt(tag_model_->NumActions() - 1);
@@ -85,8 +91,10 @@ public:
 		// Compute rob position
 		Coord rob;
 		if (tag_model_->same_loc_obs_ != floor_.NumCells()) {
+//            cout<<"Getting MostLikelyRobotPosition"<<endl;
 			rob = tag_model_->MostLikelyRobPosition(particles);
 		} else {
+            cout<<"Getting Robot position from History LastObservation"<<endl;
 			rob = floor_.GetCell(history.LastObservation());
 		}
 
@@ -95,12 +103,13 @@ public:
 		opp = tag_model_->MostLikelyOpponentPosition(particles);
 
 		double distance=Coord::ManhattanDistance(rob,opp);
+//        cout<<"The robot is at distance:"<<distance<<endl;
 
 		// If we just saw an opponent then TAG
 		if (distance<=1) {
 			return tag_model_->TagAction();
 		}
-
+//        cout<<"The distance is "<<distance<<endl;
 		vector<ACT_TYPE> actions;
 		
 		// Don't double back and don't go into walls
@@ -129,7 +138,7 @@ public:
 };
 
 /* ==============================================================================
- * TagHistoryModePolicy class
+ * TagHistoryModePolicy class -not copied
  * ==============================================================================*/
 
 class TagHistoryModePolicy: public DefaultPolicy {
@@ -137,7 +146,6 @@ private:
 	const BaseTag* tag_model_;
 	Belief* belief_;
 	Floor floor_;
-
 	int first_action_;
 	mutable vector<map<OBS_TYPE, vector<int> > > paths_;
 	mutable vector<double> state_probs_;
@@ -275,7 +283,7 @@ public:
 };
 
 /* ==============================================================================
- * TagPOMCPPrior class
+ * TagPOMCPPrior class - not copied
  * ==============================================================================*/
 
 class TagPOMCPPrior: public POMCPPrior {
@@ -467,6 +475,7 @@ void BaseTag::ReadConfig(istream& is) {
 
 			for (int y = 0; y < nrows; y++) {
 				is >> line;
+                cout<<line<<endl;
 				for (int x = 0; x < ncols; x++) {
 					if (line[x] != '#') {
 						floor_.AddCell(Coord(x, y));
@@ -502,6 +511,8 @@ BaseTag::BaseTag(string params_file) :
 }
 
 void BaseTag::Init(istream& is) {
+//    std::string s(std::istreambuf_iterator<char>(is), {});
+//    cout<<is<<endl;
 	ReadConfig(is);
 
 	TagState* state;
@@ -980,7 +991,7 @@ Coord BaseTag::MostLikelyRobPosition(const vector<State*>& particles) const {
 		TagState* tagstate = static_cast<TagState*>(particles[i]);
 		int id = rob_[tagstate->state_id];
 		probs[id] += tagstate->weight;
-
+//        cout<<"Added ID:"<<id<<", weight:"<<tagstate->weight<<":"<<particles.size()<<endl;
 		if (probs[id] > maxWeight) {
 			maxWeight = probs[id];
 			rob = id;
@@ -990,7 +1001,7 @@ Coord BaseTag::MostLikelyRobPosition(const vector<State*>& particles) const {
 	for (int i = 0; i < probs.size(); i++) {
 		probs[i] = 0.0;
 	}
-
+//    cout<<"Getting robot cell:"<<rob<<endl;
 	return floor_.GetCell(rob);
 }
 
@@ -1057,14 +1068,14 @@ Belief* BaseTag::Tau(const Belief* belief, ACT_TYPE action, OBS_TYPE obs) const 
 			probs[i] = 0;
 		}
 	}
-
+    cout<<"C++:Tau:ParticlesSize:"<<particles.size()<<endl;
 	return new ParticleBelief(new_particles, this, NULL, false);
 }
 
 double BaseTag::StepReward(const Belief* belief, ACT_TYPE action) const {
 	const vector<State*>& particles =
 		static_cast<const ParticleBelief*>(belief)->particles();
-
+    cout<<"C++:StepReward:ParticleSize:"<<particles.size()<<endl;
 	double sum = 0;
 	for (int i = 0; i < particles.size(); i++) {
 		State* particle = particles[i];
@@ -1097,6 +1108,7 @@ double BaseTag::Reward(int s, ACT_TYPE action) const {
 	} else {
 		reward = -1;
 	}
+    cout<<"C++:Reward("<<s<<","<<action<<")="<<reward<<endl;
 	return reward;
 }
 
