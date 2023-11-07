@@ -76,6 +76,12 @@ On a separate terminal, run the POMDP planner:
 ```bash
 $ rosrun laser_tag pomdp_planner
 ```
+Note: If there is a `[rospack] Error: package 'laser_tag' not found` error, Source the environment if necessary:
+``` bash
+$ source /opt/ros/noetic/setup.bash
+$ source ~/despot_ws/src
+```
+ and run the ```rosrun``` command.
 
 You should see a 3D 7x11 grid world with two Youbots. The green robot should chase the red robot until 'Tag' is called. The `R1_noise` parameter specifies the gaussian noise (standard deviation in meters) of the green robot's laser range finder.  
 

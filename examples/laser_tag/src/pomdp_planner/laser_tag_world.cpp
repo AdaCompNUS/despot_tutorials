@@ -20,7 +20,7 @@ bool LaserTagWorld::Connect(){
 	// initialize ROS node
 	int argc;
 	char ** argv;
-	ros::init(argc, argv, "test_laser_tag");
+	ros::init(argc, argv, "testLaserTag");
 	nh = ros::NodeHandlePtr(new ros::NodeHandle);
 
 	// get laser's noise sigma
@@ -38,6 +38,8 @@ bool LaserTagWorld::Connect(){
 
 	// setup service client
 	client = nh->serviceClient<laser_tag::TagActionObs>("laser_tag_action_obs");
+
+    return true;
 }
 
 //Initialize or reset the environment (for simulators or POMDP world only), return the start state of the system if applicable
@@ -69,6 +71,7 @@ bool LaserTagWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE& obs){
 			obs=(OBS_TYPE)0;
 			for (int dir = 0; dir < NUM_LASER_DIRECTIONS; dir++) {
 				LaserTag::SetReading(obs, TERMINATION_OBSERVATION, dir);
+                cout<<"Tagged Observation:"<<obs<<endl;
 			}
 			return 1; // exit
 		}
@@ -91,6 +94,7 @@ bool LaserTagWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE& obs){
 
 			for (int dir = 0; dir < 8; dir++) {
 			LaserTag::SetReading(obs, laser_obs[dir], dir);
+            cout<<"Observation:"<<obs<<endl;
 			}
 			return 0; // continue
 		}
